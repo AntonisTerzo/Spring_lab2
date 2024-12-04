@@ -1,6 +1,7 @@
 package dev.antonis.spring_lab2.category;
 
 import dev.antonis.spring_lab2.category.dto.CategoryDto;
+import dev.antonis.spring_lab2.entity.Category;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -25,5 +26,14 @@ public class CategoryService {
         return categoryRepository.findById(id)
                 .map(category -> new CategoryDto(category.getName(), category.getSymbol(),category.getDescription()))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found"));
+    }
+
+    public int addCategory(CategoryDto categoryDto) {
+        Category category = new Category();
+        category.setName(categoryDto.name());
+        category.setSymbol(categoryDto.symbol());
+        category.setDescription(categoryDto.description());
+        category = categoryRepository.save(category);
+        return  category.getId();
     }
 }
