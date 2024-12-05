@@ -25,7 +25,7 @@ public class Location {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "category_id", nullable = false)
-    private Category category;
+    private Category category_id;
 
     @NotNull
     @Column(name = "user_id", nullable = false)
@@ -40,6 +40,9 @@ public class Location {
     @NotNull
     @Column(name = "description", nullable = false)
     private String description;
+
+    @Column(name = "coordinate", columnDefinition = "geometry not null")
+    private Point<G2D> coordinate;
 
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "created_at")
@@ -65,11 +68,11 @@ public class Location {
     }
 
     public Category getCategory() {
-        return category;
+        return category_id;
     }
 
-    public void setCategory(Category category) {
-        this.category = category;
+    public void setCategory(Category category_id) {
+        this.category_id = category_id;
     }
 
     public Integer getUserId() {
@@ -112,8 +115,7 @@ public class Location {
         this.latestUpdate = latestUpdate;
     }
 
+    public Point<G2D> getCoordinate() {return coordinate;}
 
-    @Column(name = "coordinate", columnDefinition = "geometry not null")
-    private Point<G2D> coordinate;
-
+    public void setCoordinate(Point<G2D> coordinate) {this.coordinate = coordinate;}
 }
