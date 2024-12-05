@@ -1,9 +1,12 @@
 package dev.antonis.spring_lab2.location;
 
 import dev.antonis.spring_lab2.location.dto.LocationDto;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class LocationService {
@@ -19,6 +22,11 @@ public class LocationService {
     }
 
     public LocationDto getPublicLocationById(Integer id) {
-        return null;
+        return locationRepository.findByIdAndIsPrivateFalse(id)
+                .map(location ->
+                        new LocationDto(location.getName(), location.getCategory().getId(),
+                                location.getUserId(), location.getIsPrivate(), location.getDescription(),
+                                location.getCoordinate(), location.getCreatedAt(), location.getLatestUpdate()))
+                .orElseThrow(() -> new NoSuchElementException("Public location not found with id: " + id));
     }
 }
