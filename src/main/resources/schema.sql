@@ -17,5 +17,5 @@ CREATE TABLE IF NOT EXISTS location
     coordinate    GEOMETRY                NOT NULL SRID 4326,
     created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     latest_update TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (category_id) REFERENCES category (id)
+    FOREIGN KEY (category_id) REFERENCES category(id)
 );
