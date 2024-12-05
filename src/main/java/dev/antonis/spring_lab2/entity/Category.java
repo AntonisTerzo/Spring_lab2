@@ -4,9 +4,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
-
 @Entity
 @Table(name = "category", schema = "mydatabase")
 public class Category {
@@ -28,9 +25,6 @@ public class Category {
     @NotNull
     @Column(name = "description", nullable = false)
     private String description;
-
-    @OneToMany(mappedBy = "category")
-    private Set<Location> locations = new LinkedHashSet<>();
 
     public Integer getId() {
         return id;
@@ -62,14 +56,6 @@ public class Category {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public Set<Location> getLocations() {
-        return locations;
-    }
-
-    public void setLocations(Set<Location> locations) {
-        this.locations = locations;
     }
 
 }
