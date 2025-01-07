@@ -1,4 +1,4 @@
-package dev.antonis.spring_lab2.location;
+package dev.antonis.spring_lab2.configuration;
 
 import org.geolatte.geom.json.GeolatteGeomModule;
 import org.springframework.context.annotation.Bean;

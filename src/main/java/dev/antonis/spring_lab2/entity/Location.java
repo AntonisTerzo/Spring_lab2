@@ -25,7 +25,7 @@ public class Location {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "category_id", nullable = false)
-    private Category category_id;
+    private Category category;
 
     @NotNull
     @Column(name = "user_id", nullable = false)
@@ -68,11 +68,11 @@ public class Location {
     }
 
     public Category getCategory() {
-        return category_id;
+        return category;
     }
 
     public void setCategory(Category category_id) {
-        this.category_id = category_id;
+        this.category = category_id;
     }
 
     public Integer getUserId() {

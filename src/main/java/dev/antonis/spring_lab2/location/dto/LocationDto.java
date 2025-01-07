@@ -13,12 +13,6 @@ public record LocationDto(String name, Integer category, Integer userId,
                           Instant latestUpdate
 ) {
     public static LocationDto fromLocation(Location location) {
-        /*
-Geometries.mkPoint:
-Creates a Point<G2D> using the Geometries utility class provided by Geolatte.
-CoordinateReferenceSystems.WGS84:
-Specifies the spatial reference system (SRID 4326 for GPS).
-         */
         Point<G2D> extractedCoordinates = Geometries.mkPoint(
                 new org.geolatte.geom.G2D(
                         location.getCoordinate().getPosition().getLat(),
@@ -31,3 +25,10 @@ Specifies the spatial reference system (SRID 4326 for GPS).
                 extractedCoordinates, location.getCreatedAt(), location.getLatestUpdate());
     }
 }
+
+/*
+Geometries.mkPoint:
+Creates a Point<G2D> using the Geometries utility class provided by Geolatte.
+CoordinateReferenceSystems.WGS84:
+Specifies the spatial reference system (SRID 4326 for GPS).
+*/

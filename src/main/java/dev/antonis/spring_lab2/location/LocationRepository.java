@@ -8,7 +8,8 @@ import java.util.Optional;
 
 public interface LocationRepository extends ListCrudRepository<Location, Integer> {
     List<Location> findByIsPrivateFalse();
-    // Get public-locations by id
+    // Get public locations by id
     Optional<Location> findByIdAndIsPrivateFalse(Integer id);
-
+    // Get public locations in a category
+    List<Location> findByCategory_IdAndIsPrivateFalse(Integer categoryId);
 }
