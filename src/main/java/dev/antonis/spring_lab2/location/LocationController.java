@@ -2,10 +2,8 @@ package dev.antonis.spring_lab2.location;
 
 import dev.antonis.spring_lab2.location.dto.LocationDto;
 import jakarta.validation.constraints.NotNull;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -39,4 +37,12 @@ public class LocationController {
         return locationService.getLocationsByUserId(userId);
     }
 
+    @GetMapping("/area")
+    public ResponseEntity<List<LocationDto>> getLocationsWithinRadius(
+          @NotNull @RequestParam double lon,
+          @NotNull @RequestParam double lat,
+          @NotNull @RequestParam double radius
+    ) {
+        return ResponseEntity.ok(locationService.getLocationsWithinRadius(lon, lat, radius));
+    }
 }
