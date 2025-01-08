@@ -1,6 +1,7 @@
 package dev.antonis.spring_lab2.location;
 
 import dev.antonis.spring_lab2.location.dto.LocationDto;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,19 +19,24 @@ public class LocationController {
         this.locationService = locationService;
     }
 
-    @GetMapping()
+    @GetMapping("/public")
     public List<LocationDto> getAllPublicLocations() {
         return locationService.getAllPublicLocations();
     }
 
     @GetMapping("/{id}")
-    public LocationDto getPublicLocationById(@PathVariable Integer id) {
+    public LocationDto getPublicLocationById(@PathVariable @NotNull Integer id) {
         return locationService.getPublicLocationById(id);
     }
 
     @GetMapping("/categories/{categoryId}")
-    public List<LocationDto> getAllPublicLocationsFromACategory(@PathVariable("categoryId") Integer categoryId) {
+    public List<LocationDto> getAllPublicLocationsFromACategory(@PathVariable @NotNull Integer categoryId) {
         return locationService.getPublicLocationInSpecificCategory(categoryId);
+    }
+
+    @GetMapping("/users/{userId}")
+    public List<LocationDto> getLocationsByUserId(@PathVariable @NotNull Integer userId) {
+        return locationService.getLocationsByUserId(userId);
     }
 
 }

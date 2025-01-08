@@ -12,4 +12,5 @@ public interface LocationRepository extends ListCrudRepository<Location, Integer
     Optional<Location> findByIdAndIsPrivateFalse(Integer id);
     // Get public locations in a category
     List<Location> findByCategory_IdAndIsPrivateFalse(Integer categoryId);
+    List<Location> findByUserId(Integer userId);
 }
