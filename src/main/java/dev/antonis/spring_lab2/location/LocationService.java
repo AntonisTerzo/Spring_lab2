@@ -48,11 +48,12 @@ public class LocationService {
          return locations.stream().map(LocationDto::fromLocation).toList();
     }
 
-
-    public List<LocationDto> getLocationsWithinRadius(Double lon, Double lat, Double radius) {
+    public List<LocationDto> getLocationsWithinRadius(@NotNull Double lon, @NotNull Double lat, @NotNull Double radius) {
         // Construct WKT Point
         String point = String.format("POINT(%f %f)", lon, lat);
 
         return locationRepository.findWithinRadius(point, radius).stream().map(LocationDto::fromLocation).toList();
     }
+
+
 }

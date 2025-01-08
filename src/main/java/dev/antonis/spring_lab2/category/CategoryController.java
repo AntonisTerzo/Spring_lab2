@@ -9,6 +9,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
+@RequestMapping("/api/categories")
 public class CategoryController {
 
     private final CategoryService categoryService;
@@ -17,18 +18,18 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
-    @GetMapping("/categories")
+    @GetMapping()
     public List<CategoryDto> getAllCategories() {
         return categoryService.getAllCategories();
     }
 
 
-    @GetMapping("/categories/{id}")
+    @GetMapping("/{id}")
     public CategoryDto getCategoryById(@PathVariable Integer id) {
         return categoryService.getCategoryById(id);
     }
 
-    @PostMapping("/categories")
+    @PostMapping()
     public ResponseEntity<Void> addCategory(@RequestBody @Valid CategoryDto categoryDto) {
         int id = categoryService.addCategory(categoryDto);
         return ResponseEntity.created(URI.create("/categories" + id)).build();
