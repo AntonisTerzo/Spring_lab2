@@ -1,6 +1,8 @@
 package dev.antonis.spring_lab2.location.dto;
 
 import dev.antonis.spring_lab2.entity.Location;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import org.geolatte.geom.G2D;
 import org.geolatte.geom.Geometries;
 import org.geolatte.geom.Point;
@@ -8,8 +10,8 @@ import org.geolatte.geom.crs.CoordinateReferenceSystems;
 
 import java.time.Instant;
 
-public record LocationDto(String name, Integer category, Integer userId,
-                          Boolean isPrivate, String description, Point<G2D> coordinate, Instant createdAt,
+public record LocationDto(@NotBlank String name, @NotNull Integer category, @NotNull Integer userId,
+                         @NotNull Boolean isPrivate, String description, @NotNull Point<G2D> coordinate, @NotNull Instant createdAt,
                           Instant latestUpdate
 ) {
     public static LocationDto fromLocation(Location location) {

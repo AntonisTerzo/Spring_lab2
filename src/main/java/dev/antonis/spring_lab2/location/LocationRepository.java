@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface LocationRepository extends ListCrudRepository<Location, Integer> {
+    boolean existsByName(String name);
+
     List<Location> findByIsPrivateFalse();
     // Get public locations by id
     Optional<Location> findByIdAndIsPrivateFalse(Integer id);
@@ -24,8 +26,6 @@ public interface LocationRepository extends ListCrudRepository<Location, Integer
        """)
     List<Location> findWithinRadius(@Param("point") String point, @Param("radius") Double radius);
 }
-
-// Create a new category
 
 
 /*

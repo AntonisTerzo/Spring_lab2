@@ -1,19 +1,32 @@
 package dev.antonis.spring_lab2.location;
 
+import dev.antonis.spring_lab2.category.CategoryRepository;
+import dev.antonis.spring_lab2.entity.Category;
+import dev.antonis.spring_lab2.entity.Location;
 import dev.antonis.spring_lab2.location.dto.LocationDto;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import org.geolatte.geom.G2D;
+import org.geolatte.geom.Geometries;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import static org.geolatte.geom.crs.CoordinateReferenceSystems.WGS84;
+
 @Service
 public class LocationService {
 
+    private static final Logger log = LoggerFactory.getLogger(LocationService.class);
     private final LocationRepository locationRepository;
+    private final CategoryRepository categoryRepository;
 
-    public LocationService(LocationRepository locationRepository) {
+    public LocationService(LocationRepository locationRepository, CategoryRepository categoryRepository) {
         this.locationRepository = locationRepository;
+        this.categoryRepository = categoryRepository;
     }
 
     public List<LocationDto> getAllPublicLocations() {
@@ -55,5 +68,32 @@ public class LocationService {
         return locationRepository.findWithinRadius(point, radius).stream().map(LocationDto::fromLocation).toList();
     }
 
+    public Location addNewLocation(@Valid LocationDto locationDto) {
+        if (locationRepository.existsByName(locationDto.name())) {
+            throw new IllegalArgumentException("This location already exists:" + locationDto.name());
+        }
 
+        double lon = locationDto.coordinate().getPosition().getLon();
+        double lat = locationDto.coordinate().getPosition().getLat();
+        if (lat < -90 || lat > 90 || lon < -180 || lon > 180) {
+            throw new IllegalArgumentException("Invalid latitude or longitude");
+        }
+
+        var geo = Geometries.mkPoint(new G2D(lon, lat), WGS84);
+
+        Category category = categoryRepository.findById(locationDto.category())
+                .orElseThrow(() -> new NoSuchElementException("Category not found with id: " + locationDto.category()));
+
+        Location location = new Location();
+        location.setName(locationDto.name());
+        location.setCategory(category);
+        location.setUserId(locationDto.userId());
+        location.setIsPrivate(locationDto.isPrivate());
+        location.setDescription(locationDto.description());
+        location.setCoordinate(geo);
+        location.setCreatedAt(locationDto.createdAt());
+        location.setLatestUpdate(locationDto.latestUpdate());
+
+        return locationRepository.save(location);
+    }
 }

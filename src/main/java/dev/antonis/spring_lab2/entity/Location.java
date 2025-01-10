@@ -45,6 +45,7 @@ public class Location {
     private Point<G2D> coordinate;
 
     @ColumnDefault("CURRENT_TIMESTAMP")
+    @NotNull
     @Column(name = "created_at")
     private Instant createdAt;
     @ColumnDefault("CURRENT_TIMESTAMP")
