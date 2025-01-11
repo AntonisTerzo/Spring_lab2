@@ -94,9 +94,13 @@ public class LocationService {
         Location existingLocation = locationRepository.findById(id).orElseThrow(
                 () -> new NoSuchElementException("No location exists with this id: " + id));
 
+        Category category = categoryRepository.findById(updateLocationDto.category())
+                .orElseThrow(() -> new NoSuchElementException("Category not found with id: " + updateLocationDto.category()));
+
         if (updateLocationDto.name() != null) {
             existingLocation.setName(updateLocationDto.name());
         }
+            existingLocation.setCategory(category);
         if (updateLocationDto.isPrivate() != null)
             existingLocation.setIsPrivate(updateLocationDto.isPrivate());
         if (updateLocationDto.description() != null) {
