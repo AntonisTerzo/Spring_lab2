@@ -65,6 +65,7 @@ public class LocationService {
         return locationRepository.findWithinRadius(point, radius).stream().map(LocationDto::fromLocation).toList();
     }
 
+    @Transactional
     public Location addNewLocation(@Valid LocationDto locationDto) {
         if (locationRepository.existsByName(locationDto.name())) {
             throw new IllegalArgumentException("This location already exists:" + locationDto.name());
@@ -109,6 +110,11 @@ public class LocationService {
         if (updateLocationDto.latestUpdate() != null)
             existingLocation.setLatestUpdate(updateLocationDto.latestUpdate());
         locationRepository.save(existingLocation);
+    }
+
+    @Transactional
+    public void deleteLocation(Integer id) {
+        locationRepository.deleteById(id);
     }
 
     private void geolocationCoordinates(Point<G2D> coordinates) {

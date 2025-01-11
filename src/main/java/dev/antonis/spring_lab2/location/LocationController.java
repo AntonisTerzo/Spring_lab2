@@ -44,9 +44,9 @@ public class LocationController {
 
     @GetMapping("/area")
     public ResponseEntity<List<LocationDto>> getLocationsWithinRadius(
-          @NotNull @RequestParam double lon,
-          @NotNull @RequestParam double lat,
-          @NotNull @RequestParam double radius
+            @NotNull @RequestParam double lon,
+            @NotNull @RequestParam double lat,
+            @NotNull @RequestParam double radius
     ) {
         return ResponseEntity.ok(locationService.getLocationsWithinRadius(lon, lat, radius));
     }
@@ -61,7 +61,17 @@ public class LocationController {
     public ResponseEntity<String> updateLocation(@PathVariable("id") Integer id, @Valid @RequestBody UpdateLocationDto updateLocationDto) {
         try {
             locationService.updateLocation(id, updateLocationDto);
-            return ResponseEntity.ok("Location with id: " + id + " updated successfully." );
+            return ResponseEntity.ok("Location with id: " + id + " updated successfully.");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Location with id: " + id + " not found.");
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteLocation(@PathVariable("id") Integer id) {
+        try {
+            locationService.deleteLocation(id);
+            return ResponseEntity.ok("Location with id: " + id + " is deleted.");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Location with id: " + id + " not found.");
         }
