@@ -4,23 +4,20 @@ import dev.antonis.spring_lab2.category.CategoryRepository;
 import dev.antonis.spring_lab2.entity.Category;
 import dev.antonis.spring_lab2.entity.Location;
 import dev.antonis.spring_lab2.location.dto.LocationDto;
+import dev.antonis.spring_lab2.location.dto.UpdateLocationDto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.geolatte.geom.G2D;
-import org.geolatte.geom.Geometries;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.geolatte.geom.Point;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import static org.geolatte.geom.crs.CoordinateReferenceSystems.WGS84;
-
 @Service
 public class LocationService {
 
-    private static final Logger log = LoggerFactory.getLogger(LocationService.class);
     private final LocationRepository locationRepository;
     private final CategoryRepository categoryRepository;
 
@@ -38,7 +35,7 @@ public class LocationService {
                 .map(location ->
                         new LocationDto(location.getName(), location.getCategory().getId(),
                                 location.getUserId(), location.getIsPrivate(), location.getDescription(),
-                                location.getCoordinate(), location.getCreatedAt(), location.getLatestUpdate()))
+                                location.getCoordinates(), location.getCreatedAt(), location.getLatestUpdate()))
                 .orElseThrow(() -> new NoSuchElementException("Public location not found with id: " + id));
     }
 
@@ -53,12 +50,12 @@ public class LocationService {
     }
 
     public List<LocationDto> getLocationsByUserId(@NotNull Integer userId) {
-         var locations = locationRepository.findByUserId(userId);
+        var locations = locationRepository.findByUserId(userId);
 
-         if (locations.isEmpty()) {
-             throw new NoSuchElementException("No location found for the user with id " + userId);
-         }
-         return locations.stream().map(LocationDto::fromLocation).toList();
+        if (locations.isEmpty()) {
+            throw new NoSuchElementException("No location found for the user with id " + userId);
+        }
+        return locations.stream().map(LocationDto::fromLocation).toList();
     }
 
     public List<LocationDto> getLocationsWithinRadius(@NotNull Double lon, @NotNull Double lat, @NotNull Double radius) {
@@ -73,13 +70,7 @@ public class LocationService {
             throw new IllegalArgumentException("This location already exists:" + locationDto.name());
         }
 
-        double lon = locationDto.coordinate().getPosition().getLon();
-        double lat = locationDto.coordinate().getPosition().getLat();
-        if (lat < -90 || lat > 90 || lon < -180 || lon > 180) {
-            throw new IllegalArgumentException("Invalid latitude or longitude");
-        }
-
-        var geo = Geometries.mkPoint(new G2D(lon, lat), WGS84);
+        geolocationCoordinates(locationDto.coordinates());
 
         Category category = categoryRepository.findById(locationDto.category())
                 .orElseThrow(() -> new NoSuchElementException("Category not found with id: " + locationDto.category()));
@@ -90,10 +81,38 @@ public class LocationService {
         location.setUserId(locationDto.userId());
         location.setIsPrivate(locationDto.isPrivate());
         location.setDescription(locationDto.description());
-        location.setCoordinate(geo);
+        location.setCoordinates(locationDto.coordinates());
         location.setCreatedAt(locationDto.createdAt());
         location.setLatestUpdate(locationDto.latestUpdate());
 
         return locationRepository.save(location);
     }
+
+    @Transactional
+    public void updateLocation(Integer id, @Valid UpdateLocationDto updateLocationDto) {
+
+        Location existingLocation = locationRepository.findById(id).orElseThrow(
+                () -> new NoSuchElementException("No location exists with this id: " + id));
+
+        if (updateLocationDto.name() != null) {
+            existingLocation.setName(updateLocationDto.name());
+        }
+        if (updateLocationDto.isPrivate() != null)
+            existingLocation.setIsPrivate(updateLocationDto.isPrivate());
+        if (updateLocationDto.description() != null) {
+            existingLocation.setDescription(updateLocationDto.description());
+        }
+        if (updateLocationDto.latestUpdate() != null)
+            existingLocation.setLatestUpdate(updateLocationDto.latestUpdate());
+        locationRepository.save(existingLocation);
+    }
+
+    private void geolocationCoordinates(Point<G2D> coordinates) {
+        double lon = coordinates.getPosition().getLon();
+        double lat = coordinates.getPosition().getLat();
+        if (lat < -90 || lat > 90 || lon < -180 || lon > 180) {
+            throw new IllegalArgumentException("Invalid latitude or longitude");
+        }
+    }
 }
+

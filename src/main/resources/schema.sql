@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS location
     user_id       INT                     NOT NULL,
     is_private     BOOLEAN   DEFAULT false NOT NULL,
     description   VARCHAR(255)            NOT NULL,
-    coordinate    GEOMETRY                NOT NULL SRID 4326,
+    coordinates    GEOMETRY                NOT NULL SRID 4326,
     created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     latest_update TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (category_id) REFERENCES category(id)

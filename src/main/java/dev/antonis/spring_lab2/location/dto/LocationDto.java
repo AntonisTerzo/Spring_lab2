@@ -11,14 +11,14 @@ import org.geolatte.geom.crs.CoordinateReferenceSystems;
 import java.time.Instant;
 
 public record LocationDto(@NotBlank String name, @NotNull Integer category, @NotNull Integer userId,
-                         @NotNull Boolean isPrivate, String description, @NotNull Point<G2D> coordinate, @NotNull Instant createdAt,
+                          @NotNull Boolean isPrivate, String description, @NotNull Point<G2D> coordinates, @NotNull Instant createdAt,
                           Instant latestUpdate
 ) {
     public static LocationDto fromLocation(Location location) {
         Point<G2D> extractedCoordinates = Geometries.mkPoint(
                 new org.geolatte.geom.G2D(
-                        location.getCoordinate().getPosition().getLat(),
-                        location.getCoordinate().getPosition().getLon()
+                        location.getCoordinates().getPosition().getLat(),
+                        location.getCoordinates().getPosition().getLon()
                 ),
                 CoordinateReferenceSystems.WGS84
         );

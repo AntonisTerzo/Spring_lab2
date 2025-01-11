@@ -14,7 +14,7 @@ import java.time.Instant;
 public class Location {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id", nullable = false, updatable = false)
     private Integer id;
 
     @Size(max = 255)
@@ -28,7 +28,7 @@ public class Location {
     private Category category;
 
     @NotNull
-    @Column(name = "user_id", nullable = false)
+    @Column(name = "user_id", nullable = false, updatable = false)
     private Integer userId;
 
     @NotNull
@@ -42,11 +42,11 @@ public class Location {
     private String description;
 
     @Column(name = "coordinate", columnDefinition = "geometry not null")
-    private Point<G2D> coordinate;
+    private Point<G2D> coordinates;
 
     @ColumnDefault("CURRENT_TIMESTAMP")
     @NotNull
-    @Column(name = "created_at")
+    @Column(name = "created_at", updatable = false)
     private Instant createdAt;
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "latest_update")
@@ -116,7 +116,7 @@ public class Location {
         this.latestUpdate = latestUpdate;
     }
 
-    public Point<G2D> getCoordinate() {return coordinate;}
+    public Point<G2D> getCoordinates() {return coordinates;}
 
-    public void setCoordinate(Point<G2D> coordinate) {this.coordinate = coordinate;}
+    public void setCoordinates(Point<G2D> coordinates) {this.coordinates = coordinates;}
 }

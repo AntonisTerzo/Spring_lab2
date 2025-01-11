@@ -22,7 +22,7 @@ public interface LocationRepository extends ListCrudRepository<Location, Integer
     @Query(value = """
        SELECT l
        FROM Location l
-       WHERE FUNCTION('ST_Distance_Sphere', l.coordinate, FUNCTION('ST_GeomFromText', :point, 4326)) <= :radius
+       WHERE FUNCTION('ST_Distance_Sphere', l.coordinates, FUNCTION('ST_GeomFromText', :point, 4326)) <= :radius
        """)
     List<Location> findWithinRadius(@Param("point") String point, @Param("radius") Double radius);
 }
