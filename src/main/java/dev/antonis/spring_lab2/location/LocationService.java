@@ -41,21 +41,21 @@ public class LocationService {
 
     public List<LocationDto> getPublicLocationInSpecificCategory(@NotNull Integer categoryId) {
 
-        var locations = locationRepository.findByCategory_IdAndIsPrivateFalse(categoryId);
+        var findPublicCategory = locationRepository.findByCategory_IdAndIsPrivateFalse(categoryId);
 
-        if (locations.isEmpty()) {
+        if (findPublicCategory.isEmpty()) {
             throw new NoSuchElementException("No public location found in category with id " + categoryId);
         }
-        return locations.stream().map(LocationDto::fromLocation).toList();
+        return findPublicCategory.stream().map(LocationDto::fromLocation).toList();
     }
 
     public List<LocationDto> getLocationsByUserId(@NotNull Integer userId) {
-        var locations = locationRepository.findByUserId(userId);
+        var findUser = locationRepository.findByUserId(userId);
 
-        if (locations.isEmpty()) {
+        if (findUser.isEmpty()) {
             throw new NoSuchElementException("No location found for the user with id " + userId);
         }
-        return locations.stream().map(LocationDto::fromLocation).toList();
+        return findUser.stream().map(LocationDto::fromLocation).toList();
     }
 
     public List<LocationDto> getLocationsWithinRadius(@NotNull Double lon, @NotNull Double lat, @NotNull Double radius) {
