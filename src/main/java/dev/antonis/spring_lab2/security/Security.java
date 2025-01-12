@@ -23,7 +23,7 @@ public class Security {
                 .authorizeHttpRequests(authorize ->
                         authorize
                                 .requestMatchers(GET, "/api/categories").permitAll()
-                                .requestMatchers(GET, "/api/categories/").permitAll()
+                                .requestMatchers(GET, "/api/categories/*").permitAll()
                                 .requestMatchers(POST, "/api/categories").hasRole("ADMIN")
                                 .requestMatchers(GET, "/api/locations/public").permitAll()
                                 .requestMatchers(GET, "/api/locations/*").permitAll()

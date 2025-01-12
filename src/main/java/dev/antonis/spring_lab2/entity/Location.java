@@ -41,7 +41,7 @@ public class Location {
     @Column(name = "description", nullable = false)
     private String description;
 
-    @Column(name = "coordinate", columnDefinition = "geometry not null", updatable = false)
+    @Column(name = "coordinates", columnDefinition = "geometry not null", updatable = false)
     private Point<G2D> coordinates;
 
     @ColumnDefault("CURRENT_TIMESTAMP")

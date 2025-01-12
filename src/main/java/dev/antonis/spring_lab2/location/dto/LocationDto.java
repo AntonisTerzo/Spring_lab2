@@ -8,12 +8,13 @@ import org.geolatte.geom.Geometries;
 import org.geolatte.geom.Point;
 import org.geolatte.geom.crs.CoordinateReferenceSystems;
 
+import java.io.Serializable;
 import java.time.Instant;
 
 public record LocationDto(@NotBlank String name, @NotNull Integer category, @NotNull Integer userId,
                           @NotNull Boolean isPrivate, String description, @NotNull Point<G2D> coordinates, @NotNull Instant createdAt,
                           Instant latestUpdate
-) {
+) implements Serializable {
     public static LocationDto fromLocation(Location location) {
         Point<G2D> extractedCoordinates = Geometries.mkPoint(
                 new org.geolatte.geom.G2D(

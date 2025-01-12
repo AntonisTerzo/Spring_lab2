@@ -9,6 +9,8 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.geolatte.geom.G2D;
 import org.geolatte.geom.Point;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,10 +28,14 @@ public class LocationService {
         this.categoryRepository = categoryRepository;
     }
 
+    @Retryable(maxAttempts = 2)
+    @Cacheable("public-locations")
     public List<LocationDto> getAllPublicLocations() {
         return locationRepository.findByIsPrivateFalse().stream().map(LocationDto::fromLocation).toList();
     }
 
+    @Retryable(maxAttempts = 2)
+    @Cacheable("public-locations-id")
     public LocationDto getPublicLocationById(@NotNull Integer id) {
         return locationRepository.findByIdAndIsPrivateFalse(id)
                 .map(location ->
@@ -39,6 +45,8 @@ public class LocationService {
                 .orElseThrow(() -> new NoSuchElementException("Public location not found with id: " + id));
     }
 
+    @Retryable(maxAttempts = 2)
+    @Cacheable("public-locations-category")
     public List<LocationDto> getPublicLocationInSpecificCategory(@NotNull Integer categoryId) {
 
         var findPublicCategory = locationRepository.findByCategory_IdAndIsPrivateFalse(categoryId);
@@ -48,7 +56,8 @@ public class LocationService {
         }
         return findPublicCategory.stream().map(LocationDto::fromLocation).toList();
     }
-
+    @Retryable(maxAttempts = 2)
+    @Cacheable("public-locations-user-id")
     public List<LocationDto> getLocationsByUserId(@NotNull Integer userId) {
         var findUser = locationRepository.findByUserId(userId);
 
@@ -57,7 +66,8 @@ public class LocationService {
         }
         return findUser.stream().map(LocationDto::fromLocation).toList();
     }
-
+    @Retryable(maxAttempts = 2)
+    @Cacheable("public-locations-radius")
     public List<LocationDto> getLocationsWithinRadius(@NotNull Double lon, @NotNull Double lat, @NotNull Double radius) {
         // Construct WKT Point
         String point = String.format("POINT(%f %f)", lon, lat);
